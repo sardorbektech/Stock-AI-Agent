@@ -176,8 +176,8 @@ input, textarea, .stTextInput > div > div > input {
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #5a6480;
-    margin-bottom: 1rem;
-    padding-bottom: 0.4rem;
+    margin-bottom: 0.01rem;
+    padding-bottom: 0.003rem;
     border-bottom: 1px solid #1e2230;
 }
 
@@ -305,13 +305,40 @@ with st.sidebar:
     from dotenv import dotenv_values
 
     cfg = dotenv_values(".env")
+
+    # Tekshirish va saqlash uchun funksiya
     for key, label in [("OPENAI_API_KEY", "OpenAI API"), ("NEWSAPI_KEY", "NewsAPI")]:
         ok = key in cfg and cfg[key]
-        dot = "🟢" if ok else "🔴"
+        if ok:
+            # .env dan yuklang
+            if key not in st.session_state:
+                st.session_state[key] = cfg[key]
+            dot = "🟢"
+        else:
+            # Session state dan tekshiring
+            if key in st.session_state and st.session_state[key]:
+                dot = "🟢"
+            else:
+                dot = "🔴"
+
         st.markdown(
             f'<span style="font-family:monospace;font-size:0.78rem;">{dot} {label}</span>',
             unsafe_allow_html=True,
         )
+
+        # Agar .env da topilmasa, kiritish meydoni ko'rsating
+        if not ok:
+            input_key = f"input_{key}"
+            user_input = st.text_input(
+                f"Daxl qiling: {label}",
+                value=st.session_state.get(key, ""),
+                type="password",
+                key=input_key,
+                label_visibility="collapsed",
+                placeholder=f"{label} kiriting...",
+            )
+            if user_input:
+                st.session_state[key] = user_input
 
     st.markdown("---")
     st.markdown(
@@ -539,10 +566,10 @@ with tab2:
 
     if fetch_btn or "last_news_query" not in st.session_state:
         query_to_use = news_query or "stock market"
-        api_key = os.getenv("NEWSAPI_KEY")
+        api_key = st.session_state.get("NEWSAPI_KEY") or os.getenv("NEWSAPI_KEY")
         if not api_key:
             st.error(
-                "⚠️ NEWSAPI_KEY konfiguratsiya qilinmagan. .env faylini tekshiring."
+                "⚠️ NEWSAPI_KEY konfiguratsiya qilinmagan. Sidebar da API kalitini kiriting."
             )
         else:
             with st.spinner("Yangiliklar yuklanmoqda..."):
@@ -597,10 +624,10 @@ with tab3:
     )
 
     import os as _os
-    _oai_key = _os.getenv("OPENAI_API_KEY")
+    _oai_key = st.session_state.get("OPENAI_API_KEY") or _os.getenv("OPENAI_API_KEY")
     # _oai_key = _os.getenv("GROQ_API_KEY")
     if not _oai_key:
-        st.error("⚠️ OPENAI_API_KEY konfiguratsiya qilinmagan.")
+        st.error("⚠️ OPENAI_API_KEY konfiguratsiya qilinmagan. Sidebar da API kalitini kiriting.")
         # st.error("⚠️ GROQ_API_KEY konfiguratsiya qilinmagan.")
     else:
         # =====================================
@@ -673,6 +700,12 @@ with tab3:
         if "messages" not in st.session_state:
             st.session_state.messages = []
 
+        # Input at the top
+        st.markdown('<div style="margin-bottom:0.8rem;">', unsafe_allow_html=True)
+        pending = st.session_state.pop("_pending_input", None)
+        user_input = st.chat_input("Moliya savoli bering...") or pending
+        st.markdown("</div>", unsafe_allow_html=True)
+
         # Suggested questions
         st.markdown('<div style="margin-bottom:1rem;">', unsafe_allow_html=True)
         sugg_cols = st.columns(3)
@@ -687,12 +720,10 @@ with tab3:
                     st.session_state._pending_input = s
         st.markdown("</div>", unsafe_allow_html=True)
 
+        # Messages below input
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
-
-        pending = st.session_state.pop("_pending_input", None)
-        user_input = st.chat_input("Moliya savoli bering...") or pending
 
         if user_input:
             st.session_state.messages.append({"role": "user", "content": user_input})
