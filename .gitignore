@@ -33,6 +33,7 @@ venv/
 ENV/
 env/
 .venv
+.steamlit/
 
 # IDE and Editor files
 .vscode/
