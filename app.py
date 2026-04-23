@@ -16,8 +16,6 @@ import pandas as pd
 
 load_dotenv()
 
-st.secrets["OPENAI_API_KEY"]
-st.secrets["NEWSAPI_KEY"]
 
 # ─── Page config ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -309,28 +307,40 @@ with st.sidebar:
 
     cfg = dotenv_values(".env")
 
-    # Tekshirish va saqlash uchun funksiya
+    # Tekshirish va saqlash uchun funksiya (hozir .env, st.secrets, va session_state ni tekshiradi)
     for key, label in [("OPENAI_API_KEY", "OpenAI API"), ("NEWSAPI_KEY", "NewsAPI")]:
-        ok = key in cfg and cfg[key]
-        if ok:
-            # .env dan yuklang
+        cfg_val = cfg.get(key)
+        try:
+            secret_val = st.secrets.get(key)
+        except Exception:
+            secret_val = None
+        session_val = st.session_state.get(key)
+
+        # Prefer .env, then st.secrets, then session_state
+        if cfg_val:
+            val = cfg_val
+            dot = "🟢"
             if key not in st.session_state:
-                st.session_state[key] = cfg[key]
+                st.session_state[key] = cfg_val
+        elif secret_val:
+            val = secret_val
+            dot = "🟢"
+            if key not in st.session_state:
+                st.session_state[key] = secret_val
+        elif session_val:
+            val = session_val
             dot = "🟢"
         else:
-            # Session state dan tekshiring
-            if key in st.session_state and st.session_state[key]:
-                dot = "🟢"
-            else:
-                dot = "🔴"
+            val = None
+            dot = "🔴"
 
         st.markdown(
             f'<span style="font-family:monospace;font-size:0.78rem;">{dot} {label}</span>',
             unsafe_allow_html=True,
         )
 
-        # Agar .env da topilmasa, kiritish meydoni ko'rsating
-        if not ok:
+        # Agar hech qaerda topilmasa, kiritish maydonini ko'rsat
+        if not val:
             input_key = f"input_{key}"
             user_input = st.text_input(
                 f"Daxl qiling: {label}",
@@ -569,7 +579,7 @@ with tab2:
 
     if fetch_btn or "last_news_query" not in st.session_state:
         query_to_use = news_query or "stock market"
-        api_key = st.session_state.get("NEWSAPI_KEY") or os.getenv("NEWSAPI_KEY")
+        api_key = st.secrets["NEWSAPI_KEY"] or st.session_state.get("NEWSAPI_KEY") or os.getenv("NEWSAPI_KEY")
         if not api_key:
             st.error(
                 "⚠️ NEWSAPI_KEY is not configured. Please enter your API key in the sidebar."
@@ -627,7 +637,7 @@ with tab3:
     )
 
     import os as _os
-    _oai_key = st.session_state.get("OPENAI_API_KEY") or _os.getenv("OPENAI_API_KEY")
+    _oai_key = st.secrets["OPENAI_API_KEY"] or st.session_state.get("OPENAI_API_KEY") or _os.getenv("OPENAI_API_KEY")
     # _oai_key = _os.getenv("GROQ_API_KEY")
     if not _oai_key:
         st.error("⚠️ OPENAI_API_KEY konfiguratsiya qilinmagan. Sidebar da API kalitini kiriting.")
