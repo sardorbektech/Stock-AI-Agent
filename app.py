@@ -16,6 +16,9 @@ import pandas as pd
 
 load_dotenv()
 
+st.secrets["OPENAI_API_KEY"]
+st.secrets["NEWSAPI_KEY"]
+
 # ─── Page config ────────────────────────────────────────────────────────────
 st.set_page_config(
     layout="wide",
