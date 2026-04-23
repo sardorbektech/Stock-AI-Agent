@@ -28,204 +28,204 @@ st.set_page_config(
 # ─── Global CSS ─────────────────────────────────────────────────────────────
 st.markdown(
     """
-<style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'IBM Plex Sans', sans-serif;
-}
+        html, body, [class*="css"] {
+            font-family: 'IBM Plex Sans', sans-serif;
+        }
 
-/* Dark terminal background */
-.stApp {
-    background-color: #0d0f14;
-    color: #c8d0e0;
-}
+        /* Dark terminal background */
+        .stApp {
+            background-color: #0d0f14;
+            color: #c8d0e0;
+        }
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: #111318;
-    border-right: 1px solid #1e2230;
-}
+        /* Sidebar */
+        section[data-testid="stSidebar"] {
+            background-color: #111318;
+            border-right: 1px solid #1e2230;
+        }
 
-/* Tabs */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 0;
-    background: #111318;
-    border-bottom: 1px solid #1e2230;
-    padding: 0 1rem;
-}
-.stTabs [data-baseweb="tab"] {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    padding: 0.7rem 1.4rem;
-    color: #5a6480;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-}
-.stTabs [aria-selected="true"] {
-    color: #58a6ff !important;
-    border-bottom: 2px solid #58a6ff !important;
-    background: transparent !important;
-}
+        /* Tabs */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 0;
+            background: #111318;
+            border-bottom: 1px solid #1e2230;
+            padding: 0 1rem;
+        }
+        .stTabs [data-baseweb="tab"] {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            padding: 0.7rem 1.4rem;
+            color: #5a6480;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+        }
+        .stTabs [aria-selected="true"] {
+            color: #58a6ff !important;
+            border-bottom: 2px solid #58a6ff !important;
+            background: transparent !important;
+        }
 
-/* Metric cards */
-div[data-testid="metric-container"] {
-    background: #13161e;
-    border: 1px solid #1e2230;
-    border-radius: 8px;
-    padding: 1rem 1.2rem;
-}
-div[data-testid="metric-container"] label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    color: #5a6480;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-div[data-testid="metric-container"] [data-testid="stMetricValue"] {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 1.4rem;
-    color: #e0e8ff;
-}
+        /* Metric cards */
+        div[data-testid="metric-container"] {
+            background: #13161e;
+            border: 1px solid #1e2230;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+        }
+        div[data-testid="metric-container"] label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            color: #5a6480;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        div[data-testid="metric-container"] [data-testid="stMetricValue"] {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.4rem;
+            color: #e0e8ff;
+        }
 
-/* Info/success/warning boxes */
-.custom-card {
-    background: #13161e;
-    border: 1px solid #1e2230;
-    border-radius: 8px;
-    padding: 1.2rem 1.5rem;
-    margin: 0.6rem 0;
-    font-size: 0.88rem;
-    line-height: 1.7;
-}
-.card-buy  { border-left: 3px solid #3fb950; }
-.card-sell { border-left: 3px solid #f85149; }
-.card-hold { border-left: 3px solid #d29922; }
-.card-info { border-left: 3px solid #58a6ff; }
+        /* Info/success/warning boxes */
+        .custom-card {
+            background: #13161e;
+            border: 1px solid #1e2230;
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin: 0.6rem 0;
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+        .card-buy  { border-left: 3px solid #3fb950; }
+        .card-sell { border-left: 3px solid #f85149; }
+        .card-hold { border-left: 3px solid #d29922; }
+        .card-info { border-left: 3px solid #58a6ff; }
 
-/* News card */
-.news-card {
-    background: #13161e;
-    border: 1px solid #1e2230;
-    border-radius: 8px;
-    padding: 1rem 1.3rem;
-    margin: 0.5rem 0;
-    transition: border-color 0.2s;
-}
-.news-card:hover { border-color: #58a6ff; }
-.news-title {
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: #c8d0e0;
-    margin-bottom: 0.25rem;
-}
-.news-meta {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    color: #5a6480;
-}
-.news-desc {
-    font-size: 0.82rem;
-    color: #8896b3;
-    margin-top: 0.4rem;
-}
+        /* News card */
+        .news-card {
+            background: #13161e;
+            border: 1px solid #1e2230;
+            border-radius: 8px;
+            padding: 1rem 1.3rem;
+            margin: 0.5rem 0;
+            transition: border-color 0.2s;
+        }
+        .news-card:hover { border-color: #58a6ff; }
+        .news-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #c8d0e0;
+            margin-bottom: 0.25rem;
+        }
+        .news-meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            color: #5a6480;
+        }
+        .news-desc {
+            font-size: 0.82rem;
+            color: #8896b3;
+            margin-top: 0.4rem;
+        }
 
-/* Chat */
-[data-testid="stChatMessage"] {
-    background: #13161e;
-    border: 1px solid #1e2230;
-    border-radius: 8px;
-}
+        /* Chat */
+        [data-testid="stChatMessage"] {
+            background: #13161e;
+            border: 1px solid #1e2230;
+            border-radius: 8px;
+        }
 
-/* Inputs */
-input, textarea, .stTextInput > div > div > input {
-    background-color: #13161e !important;
-    border: 1px solid #1e2230 !important;
-    color: #c8d0e0 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-    border-radius: 6px !important;
-}
+        /* Inputs */
+        input, textarea, .stTextInput > div > div > input {
+            background-color: #13161e !important;
+            border: 1px solid #1e2230 !important;
+            color: #c8d0e0 !important;
+            font-family: 'IBM Plex Mono', monospace !important;
+            border-radius: 6px !important;
+        }
 
-/* Buttons */
-.stButton > button {
-    background: #1a1f2e;
-    border: 1px solid #2a3050;
-    color: #58a6ff;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-.stButton > button:hover {
-    background: #1e2540;
-    border-color: #58a6ff;
-}
+        /* Buttons */
+        .stButton > button {
+            background: #1a1f2e;
+            border: 1px solid #2a3050;
+            color: #58a6ff;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .stButton > button:hover {
+            background: #1e2540;
+            border-color: #58a6ff;
+        }
 
-/* Selectbox */
-.stSelectbox > div > div {
-    background-color: #13161e !important;
-    border: 1px solid #1e2230 !important;
-    color: #c8d0e0 !important;
-}
+        /* Selectbox */
+        .stSelectbox > div > div {
+            background-color: #13161e !important;
+            border: 1px solid #1e2230 !important;
+            color: #c8d0e0 !important;
+        }
 
-/* Section title */
-.section-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #5a6480;
-    margin-bottom: 0.01rem;
-    padding-bottom: 0.003rem;
-    border-bottom: 1px solid #1e2230;
-}
+        /* Section title */
+        .section-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #5a6480;
+            margin-bottom: 0.01rem;
+            padding-bottom: 0.003rem;
+            border-bottom: 1px solid #1e2230;
+        }
 
-/* Compare table */
-.compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.82rem;
-}
-.compare-table th {
-    background: #1a1f2e;
-    color: #5a6480;
-    padding: 0.6rem 1rem;
-    text-align: left;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-}
-.compare-table td {
-    padding: 0.6rem 1rem;
-    border-bottom: 1px solid #1e2230;
-    color: #c8d0e0;
-}
-.compare-table tr:hover td { background: #13161e; }
-.green { color: #3fb950; }
-.red   { color: #f85149; }
-.yellow { color: #d29922; }
+        /* Compare table */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.82rem;
+        }
+        .compare-table th {
+            background: #1a1f2e;
+            color: #5a6480;
+            padding: 0.6rem 1rem;
+            text-align: left;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+        }
+        .compare-table td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #1e2230;
+            color: #c8d0e0;
+        }
+        .compare-table tr:hover td { background: #13161e; }
+        .green { color: #3fb950; }
+        .red   { color: #f85149; }
+        .yellow { color: #d29922; }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #0d0f14; }
-::-webkit-scrollbar-thumb { background: #1e2230; border-radius: 2px; }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0d0f14; }
+        ::-webkit-scrollbar-thumb { background: #1e2230; border-radius: 2px; }
 
-/* Portfolio badge */
-.portfolio-badge {
-    display: inline-block;
-    background: #1a1f2e;
-    border: 1px solid #2a3050;
-    border-radius: 4px;
-    padding: 0.15rem 0.5rem;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    margin: 0.15rem;
-}
-</style>
+        /* Portfolio badge */
+        .portfolio-badge {
+            display: inline-block;
+            background: #1a1f2e;
+            border: 1px solid #2a3050;
+            border-radius: 4px;
+            padding: 0.15rem 0.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            margin: 0.15rem;
+        }
+    </style>
 """,
     unsafe_allow_html=True,
 )
@@ -260,7 +260,7 @@ with st.sidebar:
     )
 
     portfolio_input = st.text_input(
-        "Tickers for statistics (comma‑separated).",
+        "Tickers for statistics (comma-separated).",
         "AAPL,GOOGL,MSFT,TSLA",
         label_visibility="collapsed",
         placeholder="AAPL,GOOGL,MSFT...",
@@ -339,16 +339,16 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
 
-        # Agar hech qaerda topilmasa, kiritish maydonini ko'rsat
+        # Agar hech qayerda topilmasa, kiritish maydonini ko'rsat
         if not val:
             input_key = f"input_{key}"
             user_input = st.text_input(
-                f"Daxl qiling: {label}",
+                f"Enter: {label}",
                 value=st.session_state.get(key, ""),
                 type="password",
                 key=input_key,
                 label_visibility="collapsed",
-                placeholder=f"{label} kiriting...",
+                placeholder=f"{label} enter...",
             )
             if user_input:
                 st.session_state[key] = user_input
@@ -392,15 +392,15 @@ with tab1:
     col_a, col_b, col_c = st.columns([4, 2, 1])
     with col_a:
         graph_ticker = st.text_input(
-            "Grafik uchun ticker",
+            "Ticker for graph",
             "AAPL",
             key="g_ticker",
             label_visibility="collapsed",
-            placeholder="Ticker kiriting...",
+            placeholder="Enter ticker...",
         )
     with col_b:
         period_label = st.selectbox(
-            "Davr",
+            "Period",
             list(PERIOD_MAP.keys()),
             index=5,
             key="g_period",
@@ -408,23 +408,23 @@ with tab1:
         )
     with col_c:
         chart_type = st.selectbox(
-            "Turi", ["Sham", "Chiziq"], key="g_type", label_visibility="collapsed"
+            "Type", ["Candlestick", "Line"], key="g_type", label_visibility="collapsed"
         )
 
     if graph_ticker and graph_ticker.strip():
         t = graph_ticker.strip().upper()
         period_yf, interval_yf = PERIOD_MAP[period_label]
         try:
-            with st.spinner(f"{t} yuklanmoqda..."):
+            with st.spinner(f"{t} loading..."):
                 data = yf.download(
                     t, period=period_yf, interval=interval_yf, progress=False
                 )
 
             if data.empty:
-                st.error(f"'{t}' uchun ma'lumot topilmadi")
+                st.error(f"No data found for '{t}'")
             else:
                 fig = go.Figure()
-                if chart_type == "Sham":
+                if chart_type == "Candlestick":
                     fig.add_trace(
                         go.Candlestick(
                             x=data.index,
@@ -497,11 +497,11 @@ with tab1:
                 st.plotly_chart(fig, use_container_width=True)
 
         except Exception as e:
-            st.error(f"Grafik xatolik: {str(e)}")
+            st.error(f"Graph error: {str(e)}")
 
     # ── Statistika (bir yoki bir nechta ticker) ──
     st.markdown(
-        '<div class="section-title" style="margin-top:1.5rem;">Statistika</div>',
+        '<div class="section-title" style="margin-top:1.5rem;">Statistics</div>',
         unsafe_allow_html=True,
     )
     stats_input = st.text_input(
@@ -512,7 +512,7 @@ with tab1:
         placeholder="AAPL,MSFT,GOOGL...",
     )
     stats_period = st.selectbox(
-        "Statistika davri",
+        "Statistics period",
         list(PERIOD_MAP.keys()),
         index=5,
         key="stats_period",
@@ -561,9 +561,7 @@ with tab1:
 import os, requests
 
 with tab2:
-    st.markdown(
-        '<div class="section-title">Market News</div>', unsafe_allow_html=True
-    )
+    st.markdown('<div class="section-title">Market News</div>', unsafe_allow_html=True)
 
     col_n1, col_n2 = st.columns([5, 1])
     with col_n1:
@@ -579,7 +577,11 @@ with tab2:
 
     if fetch_btn or "last_news_query" not in st.session_state:
         query_to_use = news_query or "stock market"
-        api_key = st.secrets["NEWSAPI_KEY"] or st.session_state.get("NEWSAPI_KEY") or os.getenv("NEWSAPI_KEY")
+        api_key = (
+            st.secrets["NEWSAPI_KEY"]
+            or st.session_state.get("NEWSAPI_KEY")
+            or os.getenv("NEWSAPI_KEY")
+        )
         if not api_key:
             st.error(
                 "⚠️ NEWSAPI_KEY is not configured. Please enter your API key in the sidebar."
@@ -637,18 +639,21 @@ with tab3:
     )
 
     import os as _os
-    _oai_key = st.secrets["OPENAI_API_KEY"] or st.session_state.get("OPENAI_API_KEY") or _os.getenv("OPENAI_API_KEY")
+
+    _oai_key = (
+        st.secrets["OPENAI_API_KEY"]
+        or st.session_state.get("OPENAI_API_KEY")
+        or _os.getenv("OPENAI_API_KEY")
+    )
     # _oai_key = _os.getenv("GROQ_API_KEY")
     if not _oai_key:
-        st.error("⚠️ OPENAI_API_KEY konfiguratsiya qilinmagan. Sidebar da API kalitini kiriting.")
+        st.error(
+            "⚠️ OPENAI_API_KEY konfiguratsiya qilinmagan. Sidebar da API kalitini kiriting."
+        )
         # st.error("⚠️ GROQ_API_KEY konfiguratsiya qilinmagan.")
     else:
         # =====================================
-        llm = ChatOpenAI(
-            model="gpt-4o-mini",
-            temperature=0.1,
-            api_key=_oai_key
-        )
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1, api_key=_oai_key)
 
         # =====================================
         # llm = ChatGroq(
@@ -717,6 +722,7 @@ with tab3:
 
         # === for GROQ ===================================
         # agent = create_structured_chat_agent(llm, tools, agent_prompt)
+
         agent_executor = AgentExecutor(
             agent=agent,
             tools=tools,
@@ -781,6 +787,7 @@ with tab3:
             if st.button("🗑️ Clear Chat", key="clear_chat"):
                 st.session_state.messages = []
                 st.rerun()
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 4 — Tahlil
@@ -915,7 +922,10 @@ with tab4:
                     ("RSI(14)", f"{d['rsi']:.1f}"),
                     ("Average Volume", f"{d['avg_vol']:,.0f}"),
                     ("Target Price", f"{target_str} ({upside})"),
-                    ("Recommendation", f'<span style="color:{rec_color};">{d["rec"]}</span>'),
+                    (
+                        "Recommendation",
+                        f'<span style="color:{rec_color};">{d["rec"]}</span>',
+                    ),
                 ]
 
                 table_rows = "".join(
