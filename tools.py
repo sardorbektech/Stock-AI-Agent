@@ -15,15 +15,14 @@ def _to_float(val):
 
 @tool
 def get_stock_analysis(ticker: str) -> str:
-    """Aksiyaning narxi va texnik indikatorlarini (RSI, MA20, MA50, Bollinger Bands) tahlil qiladi."""
+    """Analyzes the stock price and technical indicators (RSI, MA20, MA50, Bollinger Bands)."""
     try:
         ticker = ticker.strip().upper()
         stock = yf.Ticker(ticker)
         hist = stock.history(period="3mo")
 
         if hist.empty:
-            return f"Xatolik: '{ticker}' uchun ma'lumot topilmadi"
-
+            return f"Error: No data found for '{ticker}'"
         close = hist['Close']
         current_price = _to_float(close.iloc[-1])
         ma20 = _to_float(close.rolling(20).mean().iloc[-1])
@@ -54,26 +53,24 @@ def get_stock_analysis(ticker: str) -> str:
         rsi_label = "(Overbought ⬆️)" if rsi > 70 else "(Oversold ⬇️)" if rsi < 30 else "(Neutral →)"
         trend = "Bullish 📈" if current_price > ma50 else "Bearish 📉"
 
-        return f"""📊 {ticker} Texnik Tahlil:
-• Joriy narx: ${current_price:.2f} | Oylik o'zgarish: {month_change:+.2f}%
+        return f"""📊 {ticker} Technical Analysis:
+• Current Price: ${current_price:.2f} | Monthly Change: {month_change:+.2f}%
 • Trend: {trend}
 • MA20: ${ma20:.2f} | MA50: ${ma50:.2f}
 • RSI(14): {rsi:.1f} {rsi_label}
 • Bollinger Bands: ${bb_lower:.2f} – ${bb_upper:.2f}
-• Hajm nisbati: {vol_ratio:.2f}x (o'rtachaga nisbatan)
-• P/E: {pe} | Bozor kapitali: {mc_str}"""
+• Volume Ratio: {vol_ratio:.2f}x (vs. average)
+• P/E: {pe} | Market Cap: {mc_str}"""
     except Exception as e:
-        return f"Tahlil xatolik: {str(e)}"
-
-
+        return f"Technical Analysis Error: {str(e)}"
 @tool
 def get_stock_recommendation(ticker: str) -> str:
-    """Aksiya uchun texnik ko'rsatkichlar asosida BUY/SELL/HOLD tavsiyasi beradi."""
+    """Provides a BUY/SELL/HOLD recommendation for a stock based on technical indicators."""
     try:
         ticker = ticker.strip().upper()
         hist = yf.Ticker(ticker).history(period="3mo")
         if hist.empty:
-            return f"Xatolik: '{ticker}' uchun ma'lumot topilmadi"
+            return f"Error: No data found for '{ticker}'"
 
         close = hist['Close']
         current = _to_float(close.iloc[-1])
@@ -90,30 +87,30 @@ def get_stock_recommendation(ticker: str) -> str:
 
         if current > ma50:
             score += 1
-            signals.append("✅ Narx MA50 dan yuqori")
+            signals.append("✅ The price is above the MA50.")
         else:
             score -= 1
-            signals.append("❌ Narx MA50 dan past")
+            signals.append("❌ The price is below the MA50.")
 
         if current > ma20:
             score += 1
-            signals.append("✅ Narx MA20 dan yuqori")
+            signals.append("✅ The price is above the MA20.")
         else:
             score -= 1
-            signals.append("❌ Narx MA20 dan past")
+            signals.append("❌ The price is below the MA20.")
 
         if rsi < 70:
             score += 1
-            signals.append(f"✅ RSI {rsi:.1f} – overbought emas")
+            signals.append(f"✅ RSI {rsi:.1f} - not overbought")
         else:
             score -= 1
-            signals.append(f"❌ RSI {rsi:.1f} – overbought")
+            signals.append(f"❌ RSI {rsi:.1f} - Overbought")
 
         if rsi > 30:
             score += 0
         else:
             score += 1
-            signals.append(f"✅ RSI {rsi:.1f} – oversold (xarid imkoniyati)")
+            signals.append(f"✅ RSI {rsi:.1f} - Oversold (buying opportunity).")
 
         if score >= 2:
             rec = "BUY 🟢"
@@ -123,14 +120,14 @@ def get_stock_recommendation(ticker: str) -> str:
             rec = "HOLD 🟡"
 
         signals_str = "\n".join(f"  {s}" for s in signals)
-        return f"💡 {ticker} tavsiyasi: {rec}\n\nSignallar:\n{signals_str}"
+        return f"💡 {ticker} recommendation: {rec}\n\nSignals:\n{signals_str}"
     except Exception as e:
-        return f"Tavsiya xatolik: {str(e)}"
+        return f"Recommendation error: {str(e)}"
 
 
 @tool
 def compare_stocks(ticker1: str, ticker2: str) -> str:
-    """Ikkita aksiyaning qiyosiy tahlilini bajaradi: narx, o'zgarish, RSI, hajm, P/E."""
+    """Compares the technical analysis of two stocks: price, change, RSI, volume, P/E."""
     try:
         ticker1, ticker2 = ticker1.strip().upper(), ticker2.strip().upper()
         results = {}
@@ -138,7 +135,7 @@ def compare_stocks(ticker1: str, ticker2: str) -> str:
             hist = yf.Ticker(t).history(period="1mo")
             info = yf.Ticker(t).info
             if hist.empty:
-                return f"Xatolik: '{t}' uchun ma'lumot topilmadi"
+                return f"Error: No data found for '{t}"
             close = hist['Close']
             current = _to_float(close.iloc[-1])
             change = ((current - _to_float(close.iloc[0])) / _to_float(close.iloc[0])) * 100
@@ -159,23 +156,23 @@ def compare_stocks(ticker1: str, ticker2: str) -> str:
             mc_str = f"${r['mc']/1e9:.1f}B" if r['mc'] else "N/A"
             pe_str = f"{r['pe']:.1f}" if r['pe'] else "N/A"
             return (f"{t}:\n"
-                    f"  Narx: ${r['price']:.2f} | O'zgarish: {r['change']:+.2f}%\n"
+                    f"  Price: ${r['price']:.2f} | Change: {r['change']:+.2f}%\n"
                     f"  RSI: {r['rsi']:.1f} | P/E: {pe_str}\n"
-                    f"  Bozor kapitali: {mc_str}\n"
-                    f"  O'rtacha hajm: {r['avg_vol']:,.0f}")
+                    f"  Market Capitalization: {mc_str}\n"
+                    f"  Average Volume: {r['avg_vol']:,.0f}")
 
         winner = ticker1 if results[ticker1]['change'] > results[ticker2]['change'] else ticker2
-        return f"🔄 Qiyoslash: {ticker1} vs {ticker2}\n{'─'*35}\n{fmt(ticker1)}\n{'─'*35}\n{fmt(ticker2)}\n{'─'*35}\n🏆 Yaxshiroq ish: {winner}"
+        return f"🔄 Comparison: {ticker1} vs {ticker2}\n{'─'*35}\n{fmt(ticker1)}\n{'─'*35}\n{fmt(ticker2)}\n{'─'*35}\n🏆 Better Performer: {winner}"
     except Exception as e:
-        return f"Qiyoslash xatolik: {str(e)}"
+        return f"Comparison error: {str(e)}"
 
 
 @tool
 def get_market_news(query: str) -> str:
-    """Moliya yangiliklar manbalaridan so'nggi 10 ta yangilikni oladi."""
+    """Gets the latest 10 news articles from financial news sources."""
     api_key = os.getenv("NEWSAPI_KEY")
     if not api_key:
-        return "⚠️ NEWSAPI_KEY konfiguratsiya qilinmagan"
+        return "⚠️ NEWSAPI_KEY is not configured. Please set it in your environment variables."
     try:
         url = (
             f"https://newsapi.org/v2/everything"
@@ -184,18 +181,18 @@ def get_market_news(query: str) -> str:
         )
         data = requests.get(url, timeout=10).json()
         if data.get('status') != 'ok':
-            return f"API xatolik: {data.get('message', 'Noma\'lum xatolik')}"
+            return f"API error: {data.get('message', 'Unknown error')}"
         articles = data.get('articles', [])
         if not articles:
-            return f"'{query}' uchun yangilik topilmadi"
-        news = f"📰 '{query}' bo'yicha so'nggi yangiliklar:\n\n"
+            return f"No news found for '{query}'"
+        news = f"📰 '{query}' related news:\n\n"
         for i, a in enumerate(articles, 1):
             source = a.get('source', {}).get('name', 'Unknown')
             desc = (a.get('description') or '')[:120]
             news += f"{i}. **{a['title']}**\n   📌 {source} — {a['publishedAt'][:10]}\n   {desc}\n\n"
         return news
     except Exception as e:
-        return f"Yangilik yuklashda xatolik: {str(e)}"
+        return f"Error fetching news: {str(e)}"
 
 
 tools = [

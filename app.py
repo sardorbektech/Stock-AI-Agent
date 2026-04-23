@@ -238,7 +238,7 @@ st.markdown(
         STOCK AI ASSISTANT
     </span>
     <h1 style="font-family:'IBM Plex Mono',monospace; font-size:1.6rem; color:#e0e8ff; margin:0.3rem 0 0; font-weight:600; letter-spacing:-0.02em;">
-        Moliyaviy Analitik Terminal
+        Your AI-Powered Stock Market Companion
     </h1>
 </div>
 """,
@@ -255,11 +255,11 @@ def _to_float(val):
 
 with st.sidebar:
     st.markdown(
-        '<div class="section-title">Portfolio Kuzatish</div>', unsafe_allow_html=True
+        '<div class="section-title">Portfolio Tracking</div>', unsafe_allow_html=True
     )
 
     portfolio_input = st.text_input(
-        "Tickerlar (vergul bilan)",
+        "Tickers for statistics (comma‑separated).",
         "AAPL,GOOGL,MSFT,TSLA",
         label_visibility="collapsed",
         placeholder="AAPL,GOOGL,MSFT...",
@@ -300,7 +300,7 @@ with st.sidebar:
                     pass
 
     st.markdown("---")
-    st.markdown('<div class="section-title">Sozlamalar</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Settings</div>', unsafe_allow_html=True)
 
     from dotenv import dotenv_values
 
@@ -344,8 +344,8 @@ with st.sidebar:
     st.markdown(
         """
 <div style="font-size:0.72rem;color:#3a4060;line-height:1.6;">
-⚠️ Faqat ta'limiy maqsadda.<br>
-Professional konsultant bilan maslahatlashing.
+⚠️ For educational purposes only.<br>
+Professional consultant with whom to discuss.
 </div>""",
         unsafe_allow_html=True,
     )
@@ -353,7 +353,7 @@ Professional konsultant bilan maslahatlashing.
 
 # ─── TABS ────────────────────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4 = st.tabs(
-    ["📊 Grafik", "📰 Yangiliklar", "🤖 AI Analitik", "📈 Tahlil"]
+    ["📊 Graph", "📰 News", "🤖 AI Analysis", "📈 Analysis"]
 )
 
 
@@ -361,18 +361,18 @@ tab1, tab2, tab3, tab4 = st.tabs(
 # TAB 1 — Grafik
 # ══════════════════════════════════════════════════════════════════════════════
 PERIOD_MAP = {
-    "1 soat": ("1d", "1m"),
-    "6 soat": ("1d", "5m"),
-    "12 soat": ("1d", "15m"),
-    "24 soat": ("2d", "30m"),
-    "1 hafta": ("5d", "1h"),
-    "1 oy": ("1mo", "1d"),
-    "1 yil": ("1y", "1wk"),
+    "1 hour": ("1d", "1m"),
+    "6 hours": ("1d", "5m"),
+    "12 hours": ("1d", "15m"),
+    "24 hours": ("2d", "30m"),
+    "1 week": ("5d", "1h"),
+    "1 month": ("1mo", "1d"),
+    "1 year": ("1y", "1wk"),
 }
 
 with tab1:
     st.markdown(
-        '<div class="section-title">Real-Time Grafik Tahlil</div>',
+        '<div class="section-title">Real-Time Graph Analysis</div>',
         unsafe_allow_html=True,
     )
 
@@ -492,7 +492,7 @@ with tab1:
         unsafe_allow_html=True,
     )
     stats_input = st.text_input(
-        "Statistika uchun tickerlar (vergul bilan)",
+        "Tickers for statistics (comma-separated).",
         "AAPL,MSFT,GOOGL",
         key="stats_tickers",
         label_visibility="collapsed",
@@ -532,14 +532,14 @@ with tab1:
                         st.markdown(
                             f"""
 <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#5a6480;line-height:1.8;margin-top:0.3rem;">
-  ↑ Yuqori: <span style="color:#3fb950;">${high:.2f}</span><br>
-  ↓ Past:   <span style="color:#f85149;">${low:.2f}</span><br>
-  ≋ Hajm:   {vol:,.0f}
+  ↑ High: <span style="color:#3fb950;">${high:.2f}</span><br>
+  ↓ Low:  <span style="color:#f85149;">${low:.2f}</span><br>
+  ≋ Volume: {vol:,.0f}
 </div>""",
                             unsafe_allow_html=True,
                         )
                 except:
-                    st.caption(f"{t}: xatolik")
+                    st.caption(f"{t}: error loading data")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -549,7 +549,7 @@ import os, requests
 
 with tab2:
     st.markdown(
-        '<div class="section-title">Bozor Yangiliklari</div>', unsafe_allow_html=True
+        '<div class="section-title">Market News</div>', unsafe_allow_html=True
     )
 
     col_n1, col_n2 = st.columns([5, 1])
@@ -559,20 +559,20 @@ with tab2:
             "stock market",
             key="nq",
             label_visibility="collapsed",
-            placeholder="Kompaniya yoki kalit so'z kiriting...",
+            placeholder="Enter company or keyword...",
         )
     with col_n2:
-        fetch_btn = st.button("Qidirish →", use_container_width=True)
+        fetch_btn = st.button("Search →", use_container_width=True)
 
     if fetch_btn or "last_news_query" not in st.session_state:
         query_to_use = news_query or "stock market"
         api_key = st.session_state.get("NEWSAPI_KEY") or os.getenv("NEWSAPI_KEY")
         if not api_key:
             st.error(
-                "⚠️ NEWSAPI_KEY konfiguratsiya qilinmagan. Sidebar da API kalitini kiriting."
+                "⚠️ NEWSAPI_KEY is not configured. Please enter your API key in the sidebar."
             )
         else:
-            with st.spinner("Yangiliklar yuklanmoqda..."):
+            with st.spinner("Market news loading..."):
                 try:
                     url = (
                         f"https://newsapi.org/v2/everything"
@@ -584,12 +584,12 @@ with tab2:
                     st.session_state["last_news_articles"] = articles
                     st.session_state["last_news_query"] = query_to_use
                 except Exception as e:
-                    st.error(f"Yangilik yuklashda xatolik: {e}")
+                    st.error(f"Error loading news: {e}")
 
     articles = st.session_state.get("last_news_articles", [])
     if articles:
         st.markdown(
-            f'<div style="font-family:monospace;font-size:0.72rem;color:#5a6480;margin-bottom:1rem;">— {len(articles)} ta natija: "{st.session_state.get("last_news_query","")}"</div>',
+            f'<div style="font-family:monospace;font-size:0.72rem;color:#5a6480;margin-bottom:1rem;">— {len(articles)} results for: "{st.session_state.get("last_news_query","")}"</div>',
             unsafe_allow_html=True,
         )
         for i, a in enumerate(articles):
@@ -620,7 +620,7 @@ with tab2:
 # ══════════════════════════════════════════════════════════════════════════════
 with tab3:
     st.markdown(
-        '<div class="section-title">AI Moliya Analitik</div>', unsafe_allow_html=True
+        '<div class="section-title">AI Financial Analyst</div>', unsafe_allow_html=True
     )
 
     import os as _os
@@ -632,7 +632,7 @@ with tab3:
     else:
         # =====================================
         llm = ChatOpenAI(
-            model="gpt-4.1-mini",
+            model="gpt-4o-mini",
             temperature=0.1,
             api_key=_oai_key
         )
@@ -642,15 +642,30 @@ with tab3:
         #     model="openai/gpt-oss-120b", temperature=0.1, api_key=_oai_key
         # )
 
-        _system = """Siz tajribali moliya analitikasisiz. Asosan aksiyalar va moliyaviy bozorlar haqida maslahat berasiz.
+        _system = """You are a seasoned financial analyst specializing in equities and financial markets.
 
-        Qoidalar:
-        - Faqat moliyaviy savollarga javob bering
-        - Mavjud toollardan ma'lumot oling va ularga tayanib o'zingiz qaror qabul qiling
-        - Tahlilni quyidagi tizimda bering: texnik holat → signal → tavsiya → risk
-        - Har doim risk ogohlantirishi qo'shing
-        - O'zbek tilida javob bering
-        - Javobni qisqa, aniq va professional usulda yozing"""
+                    ## Core Responsibilities
+                    - Answer only finance-related questions (stocks, markets, instruments, macroeconomics)
+                    - Retrieve data using available tools and base your conclusions strictly on that data
+                    - Make independent, well-reasoned decisions — do not deflect or ask the user to consult elsewhere
+
+                    ## Response Framework
+                    Structure every analysis in this exact order:
+                    1. **Technical Status** — current price action, trends, key levels (support/resistance)
+                    2. **Signal** — bullish / bearish / neutral with confidence level
+                    3. **Recommendation** — specific, actionable advice (buy / hold / sell / wait)
+                    4. **Risk Assessment** — downside risks, stop-loss levels, position sizing caution
+
+                    ## Style Guidelines
+                    - Be concise, precise, and professional — no filler or vague language
+                    - Always include a risk disclaimer at the end of every response
+                    - Mirror the user's language exactly:
+                    - Uzbek input → Uzbek output
+                    - English input → English output
+                    - Russian input → Russian output
+
+                    ## Risk Disclaimer (always append)
+                    ⚠️ *This analysis is for informational purposes only and does not constitute financial advice. Past performance is not indicative of future results. Always do your own research before making investment decisions.*"""
 
         agent_prompt = ChatPromptTemplate.from_messages(
             [
@@ -703,16 +718,16 @@ with tab3:
         # Input at the top
         st.markdown('<div style="margin-bottom:0.8rem;">', unsafe_allow_html=True)
         pending = st.session_state.pop("_pending_input", None)
-        user_input = st.chat_input("Moliya savoli bering...") or pending
+        user_input = st.chat_input("Ask a financial question...") or pending
         st.markdown("</div>", unsafe_allow_html=True)
 
         # Suggested questions
         st.markdown('<div style="margin-bottom:1rem;">', unsafe_allow_html=True)
         sugg_cols = st.columns(3)
         suggestions = [
-            "AAPL uchun tavsiya bering",
-            "TSLA vs NVDA qiyosla",
-            "MSFT texnik tahlil",
+            "Give a recommendation for AAPL.",
+            "Compare TSLA vs NVDA.",
+            "MSFT technical analysis.",
         ]
         for i, s in enumerate(suggestions):
             with sugg_cols[i]:
@@ -731,7 +746,7 @@ with tab3:
                 st.markdown(user_input)
 
             with st.chat_message("assistant"):
-                with st.spinner("Tahlil qilinmoqda..."):
+                with st.spinner("Analyzing..."):
                     try:
                         resp = agent_executor.invoke(
                             {
@@ -742,15 +757,15 @@ with tab3:
                                 ],
                             }
                         )
-                        out = resp.get("output", "Javob olinmadi")
+                        out = resp.get("output", "“No response received.")
                     except Exception as e:
-                        out = f"⚠️ Xatolik: {str(e)}"
+                        out = f"⚠️ Error: {str(e)}"
                 st.markdown(out)
 
             st.session_state.messages.append({"role": "assistant", "content": out})
 
         if st.session_state.messages:
-            if st.button("🗑️ Suhbatni tozalash", key="clear_chat"):
+            if st.button("🗑️ Clear Chat", key="clear_chat"):
                 st.session_state.messages = []
                 st.rerun()
 
@@ -758,7 +773,7 @@ with tab3:
 # TAB 4 — Tahlil
 # ══════════════════════════════════════════════════════════════════════════════
 def fetch_full_info(ticker: str):
-    """Aksiya haqida to'liq ma'lumot olish."""
+    """Fetch full information about a stock."""
     try:
         t = ticker.strip().upper()
         stock = yf.Ticker(t)
@@ -814,15 +829,15 @@ def fetch_full_info(ticker: str):
 
 with tab4:
     st.markdown(
-        '<div class="section-title">Chuqur Tahlil</div>', unsafe_allow_html=True
+        '<div class="section-title">Deep Analysis</div>', unsafe_allow_html=True
     )
 
     col_t1, col_t2 = st.columns([1, 1])
 
-    # ── Bitta aksiya tahlili ─────────────────────────────────────────────────
+    # ── Single stock analysis ─────────────────────────────────────────────────
     with col_t1:
         st.markdown(
-            '<div style="font-size:0.8rem;color:#8896b3;margin-bottom:0.6rem;">Bitta Aksiya Tahlili</div>',
+            '<div style="font-size:0.8rem;color:#8896b3;margin-bottom:0.6rem;">Single Stock Analysis</div>',
             unsafe_allow_html=True,
         )
         single_ticker = st.text_input(
@@ -830,16 +845,16 @@ with tab4:
             "AAPL",
             key="single_t",
             label_visibility="collapsed",
-            placeholder="Ticker kiriting...",
+            placeholder="Enter ticker...",
         )
-        analyze_btn = st.button("Tahlil →", key="btn_single", use_container_width=True)
+        analyze_btn = st.button("Analyze →", key="btn_single", use_container_width=True)
 
         if analyze_btn and single_ticker:
-            with st.spinner(f"{single_ticker.upper()} tahlil qilinmoqda..."):
+            with st.spinner(f"{single_ticker.upper()} analysis..."):
                 d, err = fetch_full_info(single_ticker)
 
             if err:
-                st.error(f"Xatolik: {err}")
+                st.error(f"Error: {err}")
             elif d:
                 # Price block
                 chg_color = "#3fb950" if d["chg_1m"] >= 0 else "#f85149"
@@ -858,7 +873,7 @@ with tab4:
   <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#5a6480;">{d['name']}</div>
   <div style="font-size:2rem;font-weight:700;color:#e0e8ff;margin:0.2rem 0;">${d['current']:.2f}</div>
   <div style="font-family:'IBM Plex Mono',monospace;font-size:0.9rem;color:{chg_color};">
-    {arrow} {abs(d['chg_1m']):.2f}% (3 oy)
+    {arrow} {abs(d['chg_1m']):.2f}% (3 months)
   </div>
 </div>""",
                     unsafe_allow_html=True,
@@ -872,22 +887,22 @@ with tab4:
                 )
 
                 rows = [
-                    ("Sektor", d["sector"]),
-                    ("Bozor kapitali", mc_str),
+                    ("Sector", d["sector"]),
+                    ("Market Cap", mc_str),
                     ("P/E", f"{d['pe']:.1f}" if d["pe"] else "N/A"),
                     ("P/B", f"{d['pb']:.2f}" if d["pb"] else "N/A"),
                     ("P/S", f"{d['ps']:.2f}" if d["ps"] else "N/A"),
                     ("EPS", f"${d['eps']:.2f}" if d["eps"] else "N/A"),
                     ("Dividend", f"{d['div']*100:.2f}%" if d["div"] else "0%"),
                     ("Beta", f"{d['beta']:.2f}" if d["beta"] else "N/A"),
-                    ("52H Yuqori", f"${d['high52']:.2f}"),
-                    ("52H Past", f"${d['low52']:.2f}"),
+                    ("52W High", f"${d['high52']:.2f}"),
+                    ("52W Low", f"${d['low52']:.2f}"),
                     ("MA20", f"${d['ma20']:.2f}"),
                     ("MA50", f"${d['ma50']:.2f}"),
                     ("RSI(14)", f"{d['rsi']:.1f}"),
-                    ("O'rtacha hajm", f"{d['avg_vol']:,.0f}"),
-                    ("Maqsad narx", f"{target_str} ({upside})"),
-                    ("Tavsiya", f'<span style="color:{rec_color};">{d["rec"]}</span>'),
+                    ("Average Volume", f"{d['avg_vol']:,.0f}"),
+                    ("Target Price", f"{target_str} ({upside})"),
+                    ("Recommendation", f'<span style="color:{rec_color};">{d["rec"]}</span>'),
                 ]
 
                 table_rows = "".join(
@@ -927,10 +942,10 @@ with tab4:
                     unsafe_allow_html=True,
                 )
 
-    # ── Qiyoslash ───────────────────────────────────────────────────────────
+    # ── Comparison ───────────────────────────────────────────────────────────
     with col_t2:
         st.markdown(
-            '<div style="font-size:0.8rem;color:#8896b3;margin-bottom:0.6rem;">Ikkita Aksiyani Solishtirish</div>',
+            '<div style="font-size:0.8rem;color:#8896b3;margin-bottom:0.6rem;">Compare Two Stocks</div>',
             unsafe_allow_html=True,
         )
         cmp_col1, cmp_col2 = st.columns(2)
@@ -950,15 +965,15 @@ with tab4:
                 label_visibility="collapsed",
                 placeholder="Ticker 2",
             )
-        cmp_btn = st.button("Solishtir →", key="btn_cmp", use_container_width=True)
+        cmp_btn = st.button("Compare →", key="btn_cmp", use_container_width=True)
 
         if cmp_btn and cmp_t1 and cmp_t2:
-            with st.spinner("Ma'lumotlar yuklanmoqda..."):
+            with st.spinner("Data loading..."):
                 d1, e1 = fetch_full_info(cmp_t1)
                 d2, e2 = fetch_full_info(cmp_t2)
 
             if e1 or e2:
-                st.error(f"Xatolik: {e1 or e2}")
+                st.error(f"Error: {e1 or e2}")
             elif d1 and d2:
 
                 def better(v1, v2, lower_is_better=False):
@@ -995,10 +1010,10 @@ with tab4:
                     f"<th style='text-align:center;width:33%;color:#e0e8ff;'>{d2['ticker']}</th>"
                     f"</tr>"
                     + cmp_row(
-                        "Narx", d1["current"], d2["current"], fmt=lambda x: f"${x:.2f}"
+                        "Price", d1["current"], d2["current"], fmt=lambda x: f"${x:.2f}"
                     )
                     + cmp_row(
-                        "3 oy o'zgarish",
+                        "3-month change",
                         d1["chg_1m"],
                         d2["chg_1m"],
                         chg_c1,
@@ -1006,7 +1021,7 @@ with tab4:
                         fmt=lambda x: f"{x:+.2f}%",
                     )
                     + cmp_row(
-                        "Bozor kapitali",
+                        "Market Cap",
                         d1["mc"],
                         d2["mc"],
                         mc_c1,
@@ -1041,21 +1056,21 @@ with tab4:
                     + cmp_row("MA20", d1["ma20"], d2["ma20"], fmt=lambda x: f"${x:.2f}")
                     + cmp_row("MA50", d1["ma50"], d2["ma50"], fmt=lambda x: f"${x:.2f}")
                     + cmp_row(
-                        "52H Yuqori",
+                        "52W High",
                         d1["high52"],
                         d2["high52"],
                         fmt=lambda x: f"${x:.2f}",
                     )
                     + cmp_row(
-                        "52H Past", d1["low52"], d2["low52"], fmt=lambda x: f"${x:.2f}"
+                        "52W Low", d1["low52"], d2["low52"], fmt=lambda x: f"${x:.2f}"
                     )
                     + cmp_row(
-                        "Maqsad narx",
+                        "Target Price",
                         d1["target"],
                         d2["target"],
                         fmt=lambda x: f"${x:.2f}",
                     )
-                    + cmp_row("Sektor", d1["sector"], d2["sector"])
+                    + cmp_row("Sector", d1["sector"], d2["sector"])
                 )
 
                 st.markdown(
@@ -1091,14 +1106,13 @@ with tab4:
                 st.markdown(
                     f"""
 <div class="custom-card card-buy" style="margin-top:0.6rem;">
-  <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#5a6480;">TAHLIL XULOSASI</div>
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#5a6480;">ANALYSIS SUMMARY</div>
   <div style="margin-top:0.4rem;font-size:0.88rem;">
-    Texnik ko'rsatkichlar bo'yicha <span style="color:#3fb950;font-weight:600;">{winner}</span>
-    ustunlik qilmoqda. Maqsad narx:
+    By technical indicators, <span style="color:#3fb950;font-weight:600;">{winner}</span> is currently leading. Target price:
     <span style="color:#58a6ff;">{f"${w_data['target']:.2f} {up}" if w_data['target'] else "N/A"}</span>
   </div>
   <div style="font-size:0.75rem;color:#5a6480;margin-top:0.4rem;">
-    ⚠️ Bu faqat texnik tahlil. Investitsiyadan oldin tadqiqot o'tkazing.
+    ⚠️ This is only technical analysis. Do your own research before investing.
   </div>
 </div>""",
                     unsafe_allow_html=True,
